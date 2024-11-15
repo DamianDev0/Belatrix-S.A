@@ -1,17 +1,38 @@
 import React from 'react';
-import { Text, View, FlatList, Image, StyleSheet } from 'react-native';
+import { Text, View, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import useVehicles from './hooks/useVehicles';
+import { NavigationProp } from '../../types/navigation.types';
 
-const HomeScreen = () => {
-  const { vehicles, loading, error } = useVehicles();
+interface HomeScreenProps {
+  navigation: NavigationProp;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { vehicles, loading, error, loadVehicles } = useVehicles();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadVehicles();
+    }, [loadVehicles])
+  );
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#0000" />
+        <Text>Loading vehicles...</Text>
+      </View>
+    );
   }
 
   if (error) {
     return <Text>Error: {error}</Text>;
   }
+
+  const handleVehiclePress = (vehicleId: string) => {
+    navigation.navigate('Details', { vehicleId });
+  };
 
   return (
     <View style={styles.container}>
@@ -20,19 +41,19 @@ const HomeScreen = () => {
         data={vehicles}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.item}>
-            {item.photo ? (
-              <Image source={{ uri: item.photo }} style={styles.image} />
-            ) : (
-              <Text>No Image Available</Text>
-            )}
-            <Text style={styles.vehicleText}>
-              {item.make} {item.model} ({item.year})
-            </Text>
-            <Text style={styles.vehicleText}>
-              License Plate: {item.licensePlate}
-            </Text>
-          </View>
+          <TouchableOpacity onPress={() => handleVehiclePress(item.id.toString())}>
+            <View style={styles.item}>
+              {item.photo ? (
+                <Image source={{ uri: item.photo }} style={styles.image} />
+              ) : (
+                <Text>No Image Available</Text>
+              )}
+              <Text style={styles.vehicleText}>
+                {item.make} {item.model} ({item.year})
+              </Text>
+              <Text style={styles.vehicleText}>License Plate: {item.licensePlate}</Text>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -64,6 +85,11 @@ const styles = StyleSheet.create({
   },
   vehicleText: {
     fontSize: 16,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

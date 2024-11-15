@@ -9,6 +9,7 @@ import SignUpScreen from '../screens/signUp/signUpScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from './TabBar';
 import FormScreen from '../screens/formScreen/formScreen';
+import DetailsVehicleScreen from '../screens/detailsScreen/detailsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -54,6 +55,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name="Signup"
           component={SignUpScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={DetailsVehicleScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
