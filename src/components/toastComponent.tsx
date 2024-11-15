@@ -13,7 +13,7 @@ const CustomToast: React.FC<CustomToastProps> = ({type, text1, text2}) => {
     text2,
   });
 
-  return null; // No renderiza nada visible
+  return null;
 };
 
 export default CustomToast;
