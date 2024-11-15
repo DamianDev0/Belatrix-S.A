@@ -26,7 +26,7 @@ const OnboardingScreen: React.FC = () => {
           backgroundColor: '#F8E9B0',
           image: (
             <Image
-              source={require('../../assets/img/image1.png')}
+              source={require('../../assets/img/195-1956528_tesla-model-s-png.png')}
               style={styles.image}
             />
           ),
@@ -39,7 +39,7 @@ const OnboardingScreen: React.FC = () => {
           backgroundColor: '#d1f2eb',
           image: (
             <Image
-              source={require('../../assets/img/image2.png')}
+              source={require('../../assets/img/bmw-wlcom.png')}
               style={styles.image}
             />
           ),
@@ -52,7 +52,7 @@ const OnboardingScreen: React.FC = () => {
           backgroundColor: '#e9bcbe',
           image: (
             <Image
-              source={require('../../assets/img/image3.png')}
+              source={require('../../assets/img/580b585b2edbce24c47b2cca.png')}
               style={styles.image}
             />
           ),

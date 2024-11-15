@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import InputGeneric from '../../components/inputGeneric';
 import useLogin from './hooks/useLogin';
@@ -27,6 +28,7 @@ const LoginScreen: React.FC = () => {
     isModalVisible,
     toggleModal,
     isLoginSuccessful,
+    handleGoToSignUp,
   } = useLogin();
 
   return (
@@ -43,7 +45,7 @@ const LoginScreen: React.FC = () => {
 
           <View style={styles.imageContainer}>
             <Image
-              source={require('../../assets/img/security.png')}
+              source={require('../../assets/img/580b585b2edbce24c47b2cca.png')}
               style={styles.image}
             />
           </View>
@@ -73,6 +75,11 @@ const LoginScreen: React.FC = () => {
               color="#FFF"
             />
           </View>
+          <View>
+            <TouchableOpacity onPress={handleGoToSignUp}>
+              <Text style={styles.sigUpText}>Dont have account? Sign Up</Text>
+            </TouchableOpacity>
+          </View>
 
           <BottomSheet
             isVisible={isModalVisible}
@@ -80,7 +87,9 @@ const LoginScreen: React.FC = () => {
             backgroundColor="#F8E9B0">
             {isLoginSuccessful ? (
               <>
-                <Text style={styles.modalTitle}>Wohoo, Login successfully!</Text>
+                <Text style={styles.modalTitle}>
+                  Wohoo, Login successfully!
+                </Text>
                 <Image
                   source={require('../../assets/img/succesfully.png')}
                   style={styles.successImage}
@@ -99,29 +108,29 @@ const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fcf3cf',
+    backgroundColor: '#FFF',
   },
   content: {
     flex: 1,
     justifyContent: 'space-between',
     padding: 20,
   },
-  topContainer: {
-  },
+  topContainer: {},
   imageContainer: {
     alignItems: 'center',
   },
   formContainer: {
     alignItems: 'center',
     gap: 20,
+    marginBottom: 20,
   },
   welcomeText: {
-    fontSize: 45,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#000',
   },
   heyText: {
-    fontSize: 40,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#000',
   },
@@ -137,9 +146,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: {
-    width: width * 0.8,
-    height: height * 0.36,
+    width: width * 0.7,
+    height: height * 0.31,
     resizeMode: 'contain',
+  },
+  sigUpText: {
+    fontSize: 12,
+    color: '#000',
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
