@@ -15,6 +15,7 @@ import useVehicleDetails from './hooks/useDetails';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../types/navigation.types';
 import Icon from 'react-native-vector-icons/Ionicons';
+import useImageUploader from './hooks/useimage';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -35,6 +36,17 @@ const DetailsScreen = () => {
   } = useVehicleDetails(vehicleId);
 
   const navigation = useNavigation();
+
+  // Usamos el hook de uploader de imagen
+  const {selectImage } = useImageUploader({
+    vehicleId,
+    onImageUpload: (photoUrl: string | null) => {
+      // Actualiza la foto del vehículo cuando se sube la nueva imagen
+      if (vehicle) {
+        vehicle.photo = photoUrl;
+      }
+    },
+  });
 
   const handleInputChange = (field: string, value: string) => {
     if (editableVehicle) {
@@ -71,11 +83,16 @@ const DetailsScreen = () => {
       <Text style={styles.title}>
         {vehicle.make} {vehicle.model} ({vehicle.year})
       </Text>
-      {vehicle.photo ? (
-        <Image source={{uri: vehicle.photo}} style={styles.image} />
-      ) : (
-        <Text>No image available</Text>
-      )}
+
+      {/* TouchableOpacity que envuelve la imagen para seleccionar una nueva foto */}
+      <TouchableOpacity onPress={selectImage}>
+        {vehicle.photo ? (
+          <Image source={{uri: vehicle.photo}} style={styles.image} />
+        ) : (
+          <Text>No image available</Text>
+        )}
+      </TouchableOpacity>
+
       <Text style={styles.vehicleText}>
         License Plate: {vehicle.licensePlate}
       </Text>
