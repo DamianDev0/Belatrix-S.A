@@ -10,18 +10,18 @@ import {
   TextInput,
   Button,
 } from 'react-native';
-import {useRoute, useNavigation} from '@react-navigation/native';
-import useVehicleDetails from './hooks/useDetails';
-import {RouteProp} from '@react-navigation/native';
-import {RootStackParamList} from '../../types/navigation.types';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../types/navigation.types'; // Ensure the path is correct
 import Icon from 'react-native-vector-icons/Ionicons';
+import useVehicleDetails from './hooks/useDetails';
 import useImageUploader from './hooks/useimage';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
 const DetailsScreen = () => {
   const route = useRoute<DetailsScreenRouteProp>();
-  const {vehicleId} = route.params;
+  const { vehicleId } = route.params;
   const {
     vehicle,
     loading,
@@ -35,13 +35,11 @@ const DetailsScreen = () => {
     setEditableVehicle,
   } = useVehicleDetails(vehicleId);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
-  // Usamos el hook de uploader de imagen
-  const {selectImage } = useImageUploader({
+  const { selectImage } = useImageUploader({
     vehicleId,
     onImageUpload: (photoUrl: string | null) => {
-      // Actualiza la foto del vehículo cuando se sube la nueva imagen
       if (vehicle) {
         vehicle.photo = photoUrl;
       }
@@ -50,7 +48,7 @@ const DetailsScreen = () => {
 
   const handleInputChange = (field: string, value: string) => {
     if (editableVehicle) {
-      setEditableVehicle({...editableVehicle, [field]: value});
+      setEditableVehicle({ ...editableVehicle, [field]: value });
     }
   };
 
@@ -78,16 +76,20 @@ const DetailsScreen = () => {
     );
   }
 
+  const handleNavigateToMaintenance = () => {
+    // Ensure that the vehicleId is correctly typed, might need conversion to string if needed
+    navigation.navigate('Maintenance', { vehicleId: vehicle.id.toString() });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
         {vehicle.make} {vehicle.model} ({vehicle.year})
       </Text>
 
-      {/* TouchableOpacity que envuelve la imagen para seleccionar una nueva foto */}
       <TouchableOpacity onPress={selectImage}>
         {vehicle.photo ? (
-          <Image source={{uri: vehicle.photo}} style={styles.image} />
+          <Image source={{ uri: vehicle.photo }} style={styles.image} />
         ) : (
           <Text>No image available</Text>
         )}
@@ -104,14 +106,23 @@ const DetailsScreen = () => {
 
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={() => handleDelete(vehicle.id.toString())}>
+          onPress={() => handleDelete(vehicle.id.toString())}
+        >
           <Icon name="trash" size={30} color="red" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={handleNavigateToMaintenance}
+        >
+          <Icon name="settings" size={30} color="#62cff4" />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.goBack()}>
+        onPress={() => navigation.goBack()}
+      >
         <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
 
@@ -119,33 +130,34 @@ const DetailsScreen = () => {
         visible={isModalVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={closeModal}>
+        onRequestClose={closeModal}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Edit Vehicle</Text>
             <TextInput
               style={styles.input}
               value={editableVehicle?.make}
-              onChangeText={text => handleInputChange('make', text)}
+              onChangeText={(text) => handleInputChange('make', text)}
               placeholder="Make"
             />
             <TextInput
               style={styles.input}
               value={editableVehicle?.model}
-              onChangeText={text => handleInputChange('model', text)}
+              onChangeText={(text) => handleInputChange('model', text)}
               placeholder="Model"
             />
             <TextInput
               style={styles.input}
               value={editableVehicle?.year?.toString()}
-              onChangeText={text => handleInputChange('year', text)}
+              onChangeText={(text) => handleInputChange('year', text)}
               placeholder="Year"
               keyboardType="numeric"
             />
             <TextInput
               style={styles.input}
               value={editableVehicle?.licensePlate}
-              onChangeText={text => handleInputChange('licensePlate', text)}
+              onChangeText={(text) => handleInputChange('licensePlate', text)}
               placeholder="License Plate"
             />
             <Button

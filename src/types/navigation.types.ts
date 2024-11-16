@@ -6,12 +6,10 @@ export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
   Details: {vehicleId: string};
+  Maintenance: {vehicleId: string};
 };
 
-export type NavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'Home' | 'Onboarding' | 'Signup' | 'Details'
->;
+export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export type MainTabParamList = {
   HomeTab: undefined;
