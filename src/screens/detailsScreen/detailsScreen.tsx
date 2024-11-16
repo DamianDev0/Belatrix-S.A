@@ -8,20 +8,22 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Button,
+  Dimensions,
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../types/navigation.types'; // Ensure the path is correct
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {RouteProp} from '@react-navigation/native';
+import {RootStackParamList} from '../../types/navigation.types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import useVehicleDetails from './hooks/useDetails';
 import useImageUploader from './hooks/useimage';
+import CustomButton from '../../components/buttonGeneric';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
+const {width} = Dimensions.get('screen');
 
 const DetailsScreen = () => {
   const route = useRoute<DetailsScreenRouteProp>();
-  const { vehicleId } = route.params;
+  const {vehicleId} = route.params;
   const {
     vehicle,
     loading,
@@ -37,7 +39,7 @@ const DetailsScreen = () => {
 
   const navigation = useNavigation<any>();
 
-  const { selectImage } = useImageUploader({
+  const {selectImage} = useImageUploader({
     vehicleId,
     onImageUpload: (photoUrl: string | null) => {
       if (vehicle) {
@@ -48,7 +50,7 @@ const DetailsScreen = () => {
 
   const handleInputChange = (field: string, value: string) => {
     if (editableVehicle) {
-      setEditableVehicle({ ...editableVehicle, [field]: value });
+      setEditableVehicle({...editableVehicle, [field]: value});
     }
   };
 
@@ -77,8 +79,7 @@ const DetailsScreen = () => {
   }
 
   const handleNavigateToMaintenance = () => {
-    // Ensure that the vehicleId is correctly typed, might need conversion to string if needed
-    navigation.navigate('Maintenance', { vehicleId: vehicle.id.toString() });
+    navigation.navigate('Maintenance', {vehicleId: vehicle.id.toString()});
   };
 
   return (
@@ -89,9 +90,9 @@ const DetailsScreen = () => {
 
       <TouchableOpacity onPress={selectImage}>
         {vehicle.photo ? (
-          <Image source={{ uri: vehicle.photo }} style={styles.image} />
+          <Image source={{uri: vehicle.photo}} style={styles.image} />
         ) : (
-          <Text>No image available</Text>
+          <Text style={styles.noImageText}>No image available</Text>
         )}
       </TouchableOpacity>
 
@@ -101,28 +102,25 @@ const DetailsScreen = () => {
 
       <View style={styles.iconContainer}>
         <TouchableOpacity style={styles.iconButton} onPress={openModal}>
-          <Icon name="pencil" size={30} color="#62cff4" />
+          <Icon name="pencil" size={30} color="black" />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={() => handleDelete(vehicle.id.toString())}
-        >
-          <Icon name="trash" size={30} color="red" />
+          onPress={() => handleDelete(vehicle.id.toString())}>
+          <Icon name="trash" size={30} color="black" />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={handleNavigateToMaintenance}
-        >
-          <Icon name="settings" size={30} color="#62cff4" />
+          onPress={handleNavigateToMaintenance}>
+          <Icon name="settings" size={30} color="black" />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.goBack()}
-      >
+        onPress={() => navigation.goBack()}>
         <Text style={styles.buttonText}>Go Back</Text>
       </TouchableOpacity>
 
@@ -130,41 +128,49 @@ const DetailsScreen = () => {
         visible={isModalVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={closeModal}
-      >
+        onRequestClose={closeModal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Edit Vehicle</Text>
             <TextInput
               style={styles.input}
               value={editableVehicle?.make}
-              onChangeText={(text) => handleInputChange('make', text)}
+              onChangeText={text => handleInputChange('make', text)}
               placeholder="Make"
             />
             <TextInput
               style={styles.input}
               value={editableVehicle?.model}
-              onChangeText={(text) => handleInputChange('model', text)}
+              onChangeText={text => handleInputChange('model', text)}
               placeholder="Model"
             />
             <TextInput
               style={styles.input}
               value={editableVehicle?.year?.toString()}
-              onChangeText={(text) => handleInputChange('year', text)}
+              onChangeText={text => handleInputChange('year', text)}
               placeholder="Year"
               keyboardType="numeric"
             />
             <TextInput
               style={styles.input}
               value={editableVehicle?.licensePlate}
-              onChangeText={(text) => handleInputChange('licensePlate', text)}
+              onChangeText={text => handleInputChange('licensePlate', text)}
               placeholder="License Plate"
             />
-            <Button
-              title="Save Changes"
-              onPress={() => handleEdit(editableVehicle!)}
-            />
-            <Button title="Cancel" onPress={closeModal} />
+            <View style={styles.containerButtons}>
+              <CustomButton
+                title="Save Changes"
+                onPress={() => handleEdit(editableVehicle!)}
+                backgroundColor="#000"
+                color="#FFFF"
+              />
+              <CustomButton
+                title="Cancel"
+                onPress={closeModal}
+                backgroundColor="#000"
+                color="#FFFF"
+              />
+            </View>
           </View>
         </View>
       </Modal>
@@ -175,30 +181,47 @@ const DetailsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f4f4',
     padding: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    elevation: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
   },
   image: {
-    width: 200,
-    height: 150,
-    resizeMode: 'cover',
+    width: 350,
+    height: 250,
+    resizeMode: 'contain',
     marginBottom: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#ddd',
+  },
+  noImageText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
   },
   vehicleText: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
+    color: '#444',
   },
   button: {
-    backgroundColor: '#62cff4',
-    padding: 10,
-    marginTop: 20,
-    borderRadius: 5,
+    backgroundColor: '#000',
+    paddingVertical: 12,
+    marginTop: 30,
+    borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
   buttonText: {
     fontSize: 16,
@@ -212,10 +235,13 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
+    marginTop: 30,
   },
   iconButton: {
     padding: 10,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    elevation: 2,
   },
   modalContainer: {
     flex: 1,
@@ -224,22 +250,41 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    width: '80%',
+    width: '85%',
     backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
+    padding: 25,
+    borderRadius: 15,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
+    color: '#333',
+    textAlign: 'center',
   },
   input: {
-    height: 40,
+    height: 45,
     borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 10,
+    marginBottom: 20,
+    paddingLeft: 15,
+    borderRadius: 8,
+    fontSize: 16,
+  },
+  saveButton: {
+    backgroundColor: '#62cff4',
+    marginTop: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#f1f1f1',
+    marginTop: 10,
+  },
+  containerButtons: {
+    gap: width * 0.04,
   },
 });
 

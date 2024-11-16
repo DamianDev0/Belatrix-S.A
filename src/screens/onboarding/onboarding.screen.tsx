@@ -1,26 +1,28 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { } from 'react';
 import { StyleSheet, Image, Dimensions } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import { NavigationProp } from '../../types/navigation.types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 const OnboardingScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  const handleNavigation = () => {
-    console.log('Navigating to Login');
-    navigation.navigate('Login');
+  const handleNavigation = async () => {
+    // Guardamos que el onboarding se completó
+    await AsyncStorage.setItem('onboardingCompleted', 'true');
+    console.log('Onboarding Completed, navigating to Login');
+    navigation.navigate('Login');  // Navegar a la pantalla de Login
   };
 
   return (
     <Onboarding
-      onSkip={handleNavigation}
-      onDone={handleNavigation}
+      onSkip={handleNavigation}  // Acción cuando se omite el onboarding
+      onDone={handleNavigation}   // Acción cuando se completa el onboarding
       bottomBarHighlight={false}
-      // eslint-disable-next-line react-native/no-inline-styles
-      containerStyles={{paddingHorizontal: 15}}
+      containerStyles={{ paddingHorizontal: 15 }}
       pages={[
         {
           backgroundColor: '#F8E9B0',
